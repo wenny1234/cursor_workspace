@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン - ショップ管理</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-page">
+<div class="login-card">
+    <h1>ショップ管理画面</h1>
+    <p class="subtitle">admin-shop-manage</p>
+    <form th:action="@{/login}" method="post">
+        <label for="username">ユーザー名</label>
+        <input id="username" name="username" type="text" required autofocus>
+
+        <label for="password">パスワード</label>
+        <input id="password" name="password" type="password" required>
+
+        <button type="submit" class="btn btn-primary">ログイン</button>
+    </form>
+    <p th:if="${param.error}" class="alert alert-error">ユーザー名またはパスワードが正しくありません</p>
+    <p th:if="${param.logout}" class="alert alert-success">ログアウトしました</p>
+</div>
+</body>
+</html>

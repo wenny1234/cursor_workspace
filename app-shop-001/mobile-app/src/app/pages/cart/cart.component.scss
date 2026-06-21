@@ -1,0 +1,27 @@
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cart-line__name {
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.cart-line__meta {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.cart-line__total {
+  margin-top: 8px;
+  font-weight: 900;
+}
+
+.cart-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

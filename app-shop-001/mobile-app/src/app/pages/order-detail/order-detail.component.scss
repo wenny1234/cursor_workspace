@@ -1,0 +1,29 @@
+
+.link-back {
+  width: fit-content;
+  background: transparent;
+  border: 0;
+  color: #1976d2;
+  font-weight: 900;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.order-detail h1 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.order-item {
+  margin-top: 10px;
+}
+
+.order-item__meta {
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.admin-actions .primary-btn:disabled {
+  opacity: 0.5;
+}

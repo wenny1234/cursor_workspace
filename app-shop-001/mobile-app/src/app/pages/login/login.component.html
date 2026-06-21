@@ -1,0 +1,22 @@
+<section class="page">
+  <h1>ログイン</h1>
+  <p class="subtitle">アカウントでログインします</p>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <label for="username">ユーザー名</label>
+      <input id="username" type="text" formControlName="username" autocomplete="username" />
+
+      <label for="password">パスワード</label>
+      <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+
+      <button class="primary-btn" type="submit" [disabled]="isLoading || form.invalid">
+        {{ isLoading ? 'ログイン中...' : 'ログイン' }}
+      </button>
+
+      <div *ngIf="errorMessage" class="card" role="alert">
+        {{ errorMessage }}
+      </div>
+    </div>
+  </form>
+</section>

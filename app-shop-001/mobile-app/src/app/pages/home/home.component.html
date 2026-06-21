@@ -1,0 +1,44 @@
+<section class="page">
+  <h1>商品一覧</h1>
+  <p class="subtitle">商品を選んでカートに追加できる雛形です。</p>
+
+  <div *ngIf="isLoading" class="card" role="status">
+    読み込み中...
+  </div>
+
+  <div *ngIf="errorMessage" class="card" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="product-list">
+    <a
+      class="product-card"
+      *ngFor="let p of products"
+      [routerLink]="['/products', p.id]"
+    >
+      <img
+        class="product-img"
+        [src]="imageUrl(p.imageUrl)"
+        [alt]="p.name"
+        loading="lazy"
+      />
+
+      <div class="product-info">
+        <div class="product-name">{{ p.name }}</div>
+        <div class="product-price">
+          {{ p.price | currency:'JPY':'symbol':'1.0-0' }}
+        </div>
+        <div class="product-meta">
+          <span class="badge" [class.badge--out]="!p.inStock">
+            {{ p.inStock ? '在庫あり' : '在庫なし' }}
+          </span>
+          <span class="badge badge--muted">{{ p.category }}</span>
+        </div>
+      </div>
+    </a>
+
+    <div *ngIf="products.length === 0" class="card" role="status">
+      商品がありません。
+    </div>
+  </div>
+</section>

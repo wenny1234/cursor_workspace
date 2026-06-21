@@ -1,0 +1,49 @@
+<section class="page">
+  <button class="link-back" type="button" (click)="onBack()">← 戻る</button>
+
+  <div *ngIf="isLoading" class="card" role="status">
+    読み込み中...
+  </div>
+
+  <div *ngIf="errorMessage" class="card" role="alert">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="product" class="product-detail">
+    <img
+      class="product-detail-img"
+      [src]="productImageUrl(product.imageUrl)"
+      [alt]="product.name"
+    />
+
+    <h1>{{ product.name }}</h1>
+    <p class="subtitle">{{ product.category }}</p>
+
+    <div class="product-detail-price">
+      {{ product.price | currency:'JPY':'symbol':'1.0-0' }}
+    </div>
+
+    <div class="card">
+      <strong>説明</strong>
+      <div>{{ product.description }}</div>
+    </div>
+
+    <button
+      class="primary-btn"
+      type="button"
+      (click)="onAddToCart()"
+      [disabled]="product.inStock === false"
+      style="margin-top: 12px;"
+    >
+      {{ product.inStock === false ? '在庫なし' : 'カートに追加' }}
+    </button>
+
+    <a routerLink="/cart" class="primary-btn" style="margin-top: 10px; display: block; text-align: center; text-decoration: none;">
+      カートを見る
+    </a>
+
+    <div *ngIf="addResult" class="card" role="status" style="margin-top: 12px;">
+      {{ addResult }}
+    </div>
+  </div>
+</section>

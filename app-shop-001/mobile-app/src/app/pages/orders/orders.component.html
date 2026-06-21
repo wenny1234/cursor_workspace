@@ -1,0 +1,29 @@
+<section class="page">
+  <h1>注文</h1>
+  <p class="subtitle">あなたの注文履歴です</p>
+
+  <div *ngIf="isLoading" class="card" role="status">読み込み中...</div>
+
+  <div *ngIf="errorMessage" class="card" role="alert">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && !errorMessage && orders.length === 0" class="card" role="status">
+    注文がありません。カートから購入してください。
+  </div>
+
+  <div *ngIf="!isLoading && orders.length > 0" class="order-list">
+    <a
+      class="card order-card"
+      *ngFor="let order of orders"
+      [routerLink]="['/orders', order.id]"
+    >
+      <strong>{{ order.orderNumber }}</strong>
+      <div>合計：{{ order.totalAmount | currency:'JPY':'symbol':'1.0-0' }}</div>
+      <div>ステータス：{{ statusLabel(order.status) }}</div>
+      <div *ngIf="order.items?.length" class="order-items">
+        <div *ngFor="let item of order.items">
+          {{ item.productName }} × {{ item.quantity }}
+        </div>
+      </div>
+    </a>
+  </div>
+</section>

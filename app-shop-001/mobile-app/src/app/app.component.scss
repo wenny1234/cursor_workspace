@@ -1,0 +1,64 @@
+/* モバイル向け：固定ヘッダー + 固定下部ナビ + 本文スクロール */
+:host {
+  display: block;
+  height: 100vh;
+  background: #f6f7fb;
+}
+
+.app-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: #1976d2;
+  color: #fff;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.app-header__title {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.app-main {
+  flex: 1;
+  padding: 72px 16px 80px; /* header + bottom nav 分の余白 */
+  overflow: auto;
+}
+
+.app-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 64px;
+  background: #ffffff;
+  border-top: 1px solid #e7e7e7;
+  z-index: 10;
+  display: flex;
+}
+
+.nav-item {
+  flex: 1;
+  text-align: center;
+  line-height: 64px;
+  text-decoration: none;
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.nav-item.active {
+  color: #1976d2;
+}
+

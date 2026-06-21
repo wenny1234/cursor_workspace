@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ショップ管理画面</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+<div id="app" class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">ショップ管理</div>
+        <nav class="nav">
+            <button class="nav-item active" data-page="dashboard">売上統計</button>
+            <button class="nav-item" data-page="products">商品一覧</button>
+            <button class="nav-item" data-page="product-form">商品登録/更新</button>
+            <button class="nav-item" data-page="users">ユーザー一覧</button>
+            <button class="nav-item" data-page="user-form">ユーザー登録/更新</button>
+            <button class="nav-item" data-page="orders">最近の注文履歴</button>
+        </nav>
+        <form th:action="@{/logout}" method="post" class="logout-form">
+            <button type="submit" class="btn btn-secondary">ログアウト</button>
+        </form>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h1 id="page-title">売上統計</h1>
+            <div id="toast" class="toast hidden"></div>
+        </header>
+
+        <section id="page-dashboard" class="page active">
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-label">売上総額</div>
+                    <div id="stat-total-sales" class="stat-value">-</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-label">注文総数</div>
+                    <div id="stat-total-orders" class="stat-value">-</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-label">完了注文</div>
+                    <div id="stat-completed-orders" class="stat-value">-</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-label">有効商品</div>
+                    <div id="stat-active-products" class="stat-value">-</div>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-label">有効ユーザー</div>
+                    <div id="stat-active-users" class="stat-value">-</div>
+                </article>
+            </div>
+        </section>
+
+        <section id="page-products" class="page">
+            <div class="toolbar">
+                <input id="product-search" type="search" placeholder="商品名/カテゴリ/説明で検索">
+                <label class="checkbox-inline">
+                    <input id="product-include-inactive" type="checkbox"> 無効商品を表示
+                </label>
+                <button id="product-search-btn" class="btn btn-primary">検索</button>
+                <button id="product-new-btn" class="btn">新規商品</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>画像</th>
+                        <th>商品名</th>
+                        <th>カテゴリ</th>
+                        <th>価格</th>
+                        <th>在庫</th>
+                        <th>状態</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="product-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="page-product-form" class="page">
+            <form id="product-form" class="form-card">
+                <input type="hidden" id="product-id">
+                <div class="form-grid">
+                    <label>商品名<input id="product-name" required maxlength="200"></label>
+                    <label>カテゴリ<input id="product-category" maxlength="100"></label>
+                    <label>価格<input id="product-price" type="number" step="0.01" min="0.01" required></label>
+                    <label>在庫<input id="product-stock" type="number" min="0" required></label>
+                    <label class="full">商品説明<textarea id="product-description" maxlength="1000" rows="4"></textarea></label>
+                    <label class="full">画像URL<input id="product-image-url" readonly></label>
+                    <label class="full">画像アップロード<input id="product-image-file" type="file" accept="image/*"></label>
+                    <div class="preview full"><img id="product-image-preview" alt="商品プレビュー"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" id="product-reset-btn" class="btn btn-secondary">リセット</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="page-users" class="page">
+            <div class="toolbar">
+                <input id="user-search" type="search" placeholder="ユーザー名/メールで検索">
+                <label class="checkbox-inline">
+                    <input id="user-include-inactive" type="checkbox"> 無効ユーザーを表示
+                </label>
+                <button id="user-search-btn" class="btn btn-primary">検索</button>
+                <button id="user-new-btn" class="btn">新規ユーザー</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>アイコン</th>
+                        <th>ユーザー名</th>
+                        <th>メール</th>
+                        <th>ロール</th>
+                        <th>状態</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="user-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="page-user-form" class="page">
+            <form id="user-form" class="form-card">
+                <input type="hidden" id="user-id">
+                <div class="form-grid">
+                    <label>ユーザー名<input id="user-username" required minlength="3" maxlength="50"></label>
+                    <label>メール<input id="user-email" type="email" required></label>
+                    <label>ロール
+                        <select id="user-role" required>
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="STAFF">STAFF</option>
+                            <option value="VIEWER" selected>VIEWER</option>
+                        </select>
+                    </label>
+                    <label>パスワード<span class="hint">（新規時必須、8〜12桁・3種類混合）</span>
+                        <input id="user-password" type="password" minlength="8" maxlength="12">
+                    </label>
+                    <label class="full">アイコンURL<input id="user-avatar-url" readonly></label>
+                    <label class="full">アイコンアップロード<input id="user-avatar-file" type="file" accept="image/*"></label>
+                    <div class="preview full"><img id="user-avatar-preview" alt="ユーザープレビュー"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" id="user-reset-btn" class="btn btn-secondary">リセット</button>
+                </div>
+            </form>
+        </section>
+
+        <section id="page-orders" class="page">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>注文番号</th>
+                        <th>ユーザー</th>
+                        <th>合計金額</th>
+                        <th>状態</th>
+                        <th>作成日時</th>
+                    </tr>
+                    </thead>
+                    <tbody id="order-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

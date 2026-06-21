@@ -1,0 +1,84 @@
+# ========================================
+# Java / Spring Boot .gitignore
+# ========================================
+
+# ----- 编译输出 -----
+target/
+build/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+
+# ----- Maven -----
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ----- Gradle -----
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# ----- IDE - Eclipse -----
+.project
+.classpath
+.settings/
+*.launch
+.factorypath
+
+# ----- IDE - IntelliJ IDEA -----
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# ----- IDE - NetBeans -----
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# ----- IDE - VS Code -----
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ----- 日志文件 -----
+logs/
+*.log
+*.log.*
+*.log.gz
+
+# ----- 操作系统文件 -----
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# ----- 应用配置（敏感信息） -----
+# 如有本地配置，取消注释以下行
+# application-local.yml
+# application-local.properties
+# *.local.yml
+# *.local.properties
+
+# ----- 其他 -----
+*.bak
+*.tmp
+*.temp
+.cache/

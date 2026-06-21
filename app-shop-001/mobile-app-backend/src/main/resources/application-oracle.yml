@@ -1,0 +1,23 @@
+# Oracle XE (Docker: gvenzl/oracle-xe, port 1521)
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@//localhost:1521/XEPDB1
+    username: ${ORACLE_USER:shop}
+    password: ${ORACLE_PASSWORD:ShopPassword123}
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.shop.backend.model
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+
+app:
+  oracle:
+    # 通常運用は false。CSV 再取り込み時のみ ORACLE_IMPORT_CSV=true で起動
+    import-csv-on-startup: ${ORACLE_IMPORT_CSV:false}

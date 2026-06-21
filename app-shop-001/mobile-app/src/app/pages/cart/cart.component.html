@@ -1,0 +1,44 @@
+<section class="page">
+  <h1>カート</h1>
+  <p class="subtitle">内容を確認して注文してください</p>
+
+  <div *ngIf="isLoading" class="card" role="status">読み込み中...</div>
+
+  <div *ngIf="!isLoading && lines.length === 0" class="card" role="status">
+    カートに商品がありません。
+  </div>
+
+  <div *ngIf="!isLoading && lines.length > 0" class="cart-list">
+    <div class="card cart-line" *ngFor="let line of lines">
+      <div class="cart-line__name">{{ line.name }}</div>
+      <div class="cart-line__meta">
+        {{ line.price | currency:'JPY':'symbol':'1.0-0' }} × {{ line.qty }}
+      </div>
+      <div class="cart-line__total">
+        {{ line.lineTotal | currency:'JPY':'symbol':'1.0-0' }}
+      </div>
+    </div>
+
+    <div class="card cart-summary">
+      <strong>合計</strong>
+      <div>{{ totalAmount | currency:'JPY':'symbol':'1.0-0' }}</div>
+    </div>
+
+    <button
+      class="primary-btn"
+      type="button"
+      (click)="onCheckout()"
+      [disabled]="isSubmitting"
+    >
+      {{ isSubmitting ? '注文中...' : '注文を確定' }}
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="card" role="alert" style="margin-top: 12px;">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="card" role="status" style="margin-top: 12px;">
+    {{ successMessage }}
+  </div>
+</section>

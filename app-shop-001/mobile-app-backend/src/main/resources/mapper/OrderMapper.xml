@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.backend.mapper.OrderMapper">
+
+    <resultMap id="OrderResultMap" type="com.shop.backend.model.Order">
+        <id property="id" column="id"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="userId" column="user_id"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="OrderColumns">
+        id, order_number, user_id, total_amount, status, created_at, updated_at
+    </sql>
+
+    <select id="findById" resultMap="OrderResultMap">
+        SELECT <include refid="OrderColumns"/>
+        FROM orders
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByOrderNumber" resultMap="OrderResultMap">
+        SELECT <include refid="OrderColumns"/>
+        FROM orders
+        WHERE order_number = #{orderNumber}
+    </select>
+
+    <select id="findByUserId" resultMap="OrderResultMap">
+        SELECT <include refid="OrderColumns"/>
+        FROM orders
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC, id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.shop.backend.model.Order">
+        <selectKey keyProperty="id" order="BEFORE" resultType="long">
+            SELECT orders_seq.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO orders (id, order_number, user_id, total_amount, status, created_at, updated_at)
+        VALUES (#{id}, #{orderNumber}, #{userId}, #{totalAmount}, #{status}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.shop.backend.model.Order">
+        UPDATE orders
+        SET order_number = #{orderNumber},
+            user_id = #{userId},
+            total_amount = #{totalAmount},
+            status = #{status},
+            created_at = #{createdAt},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+</mapper>

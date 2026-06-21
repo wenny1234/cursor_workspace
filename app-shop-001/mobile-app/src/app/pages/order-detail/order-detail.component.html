@@ -1,0 +1,48 @@
+<section class="page">
+  <button class="link-back" type="button" (click)="onBack()">← 注文一覧</button>
+
+  <div *ngIf="isLoading" class="card" role="status">読み込み中...</div>
+  <div *ngIf="errorMessage" class="card" role="alert">{{ errorMessage }}</div>
+
+  <div *ngIf="order" class="order-detail">
+    <h1>{{ order.orderNumber }}</h1>
+    <p class="subtitle">ステータス：{{ statusLabel(order.status) }}</p>
+
+    <div class="card">
+      <strong>合計</strong>
+      <div>{{ order.totalAmount | currency:'JPY':'symbol':'1.0-0' }}</div>
+    </div>
+
+    <div class="card">
+      <strong>商品明細</strong>
+      <div class="order-item" *ngFor="let item of order.items">
+        <div>{{ item.productName }}</div>
+        <div class="order-item__meta">
+          {{ item.unitPrice | currency:'JPY':'symbol':'1.0-0' }} × {{ item.quantity }}
+          = {{ item.lineTotal | currency:'JPY':'symbol':'1.0-0' }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="canManage" class="admin-actions">
+      <button
+        class="primary-btn"
+        type="button"
+        (click)="onUpdateStatus('SHIPPING')"
+        [disabled]="isUpdating || order.status !== 'PAID'"
+        style="margin-top: 12px;"
+      >
+        配送中にする
+      </button>
+      <button
+        class="primary-btn"
+        type="button"
+        (click)="onUpdateStatus('COMPLETED')"
+        [disabled]="isUpdating || order.status === 'COMPLETED' || order.status === 'CANCELLED'"
+        style="margin-top: 10px;"
+      >
+        完了にする
+      </button>
+    </div>
+  </div>
+</section>

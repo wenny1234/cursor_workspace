@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.admin.mapper.ProductMapper">
+
+    <resultMap id="ProductResultMap" type="com.shop.admin.model.Product">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="price" column="price"/>
+        <result property="stock" column="stock"/>
+        <result property="category" column="category"/>
+        <result property="imageUrl" column="image_url"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="ProductColumns">
+        id, name, description, price, stock, category, image_url, created_at, updated_at
+    </sql>
+
+    <select id="findById" resultMap="ProductResultMap">
+        SELECT <include refid="ProductColumns"/>
+        FROM products
+        WHERE id = #{id}
+    </select>
+
+    <select id="search" resultMap="ProductResultMap">
+        SELECT <include refid="ProductColumns"/>
+        FROM products
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    LOWER(name) LIKE '%' || LOWER(#{keyword}) || '%'
+                    OR LOWER(category) LIKE '%' || LOWER(#{keyword}) || '%'
+                    OR LOWER(description) LIKE '%' || LOWER(#{keyword}) || '%'
+                )
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.shop.admin.model.Product">
+        <selectKey keyProperty="id" order="BEFORE" resultType="long">
+            SELECT products_seq.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO products (id, name, description, price, stock, category, image_url, created_at, updated_at)
+        VALUES (#{id}, #{name}, #{description}, #{price}, #{stock}, #{category}, #{imageUrl}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.shop.admin.model.Product">
+        UPDATE products
+        SET name = #{name},
+            description = #{description},
+            price = #{price},
+            stock = #{stock},
+            category = #{category},
+            image_url = #{imageUrl},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <update id="deactivate">
+        UPDATE products
+        SET updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="countActive" resultType="long">
+        SELECT COUNT(*) FROM products
+    </select>
+</mapper>
