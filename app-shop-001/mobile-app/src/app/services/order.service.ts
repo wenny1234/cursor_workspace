@@ -23,6 +23,7 @@ export interface Order {
   userId: number;
   totalAmount: number;
   status: string;
+  shippingAddress?: string;
   createdAt?: string;
   updatedAt?: string;
   items?: OrderItem[];

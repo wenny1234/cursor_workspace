@@ -2,6 +2,7 @@ package com.shop.backend.repository;
 
 import com.shop.backend.model.Order;
 import com.shop.backend.model.OrderItem;
+import com.shop.backend.model.OrderStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,8 @@ public interface OrderRepository {
     Optional<Order> findById(Long id);
 
     List<Order> findByUserId(Long userId);
+
+    List<Order> findByStatus(OrderStatus status);
 
     List<OrderItem> findItemsByOrderId(Long orderId);
 

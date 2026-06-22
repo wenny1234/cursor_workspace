@@ -102,6 +102,33 @@ public class OrderService {
         return orderRepository.save(order, items);
     }
 
+    public List<Order> getOrdersByStatus(OrderStatus status) {
+        List<Order> orders = orderRepository.findByStatus(status);
+        orders.forEach(this::attachItems);
+        return orders;
+    }
+
+    @Transactional
+    public Order shipOrder(Long orderId, String shippingAddress) {
+        if (shippingAddress == null || shippingAddress.isBlank()) {
+            throw new IllegalArgumentException("送り場所を入力してください");
+        }
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("订单不存在"));
+
+        if (order.getStatus() != OrderStatus.PAID) {
+            throw new IllegalArgumentException("支払済の注文のみ出荷できます");
+        }
+
+        order.setShippingAddress(shippingAddress.trim());
+        order.setStatus(OrderStatus.SHIPPING);
+        order.setUpdatedAt(LocalDateTime.now());
+
+        List<OrderItem> items = orderRepository.findItemsByOrderId(orderId);
+        return orderRepository.save(order, items);
+    }
+
     private void attachItems(Order order) {
         order.setItems(orderRepository.findItemsByOrderId(order.getId()));
     }

@@ -2,6 +2,7 @@ package com.shop.backend.repository.csv;
 
 import com.shop.backend.model.Order;
 import com.shop.backend.model.OrderItem;
+import com.shop.backend.model.OrderStatus;
 import com.shop.backend.repository.OrderRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -34,6 +35,15 @@ public class OrderCsvRepository implements OrderRepository {
         return orders.values().stream()
                 .filter(o -> Objects.equals(o.getUserId(), userId))
                 .sorted(Comparator.comparing(Order::getCreatedAt, Comparator.nullsLast(Comparator.reverseOrder())))
+                .peek(o -> o.setItems(new ArrayList<>(itemsByOrderId.getOrDefault(o.getId(), List.of()))))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Order> findByStatus(OrderStatus status) {
+        return orders.values().stream()
+                .filter(o -> o.getStatus() == status)
+                .sorted(Comparator.comparing(Order::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())))
                 .peek(o -> o.setItems(new ArrayList<>(itemsByOrderId.getOrDefault(o.getId(), List.of()))))
                 .collect(Collectors.toList());
     }

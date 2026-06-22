@@ -9,12 +9,13 @@
         <result property="userId" column="user_id"/>
         <result property="totalAmount" column="total_amount"/>
         <result property="status" column="status"/>
+        <result property="shippingAddress" column="shipping_address"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
 
     <sql id="OrderColumns">
-        id, order_number, user_id, total_amount, status, created_at, updated_at
+        id, order_number, user_id, total_amount, status, shipping_address, created_at, updated_at
     </sql>
 
     <select id="findById" resultMap="OrderResultMap">
@@ -36,12 +37,19 @@
         ORDER BY created_at DESC, id DESC
     </select>
 
+    <select id="findByStatus" resultMap="OrderResultMap">
+        SELECT <include refid="OrderColumns"/>
+        FROM orders
+        WHERE status = #{status}
+        ORDER BY created_at ASC, id ASC
+    </select>
+
     <insert id="insert" parameterType="com.shop.backend.model.Order">
         <selectKey keyProperty="id" order="BEFORE" resultType="long">
             SELECT orders_seq.NEXTVAL FROM DUAL
         </selectKey>
-        INSERT INTO orders (id, order_number, user_id, total_amount, status, created_at, updated_at)
-        VALUES (#{id}, #{orderNumber}, #{userId}, #{totalAmount}, #{status}, #{createdAt}, #{updatedAt})
+        INSERT INTO orders (id, order_number, user_id, total_amount, status, shipping_address, created_at, updated_at)
+        VALUES (#{id}, #{orderNumber}, #{userId}, #{totalAmount}, #{status}, #{shippingAddress}, #{createdAt}, #{updatedAt})
     </insert>
 
     <update id="update" parameterType="com.shop.backend.model.Order">
@@ -50,6 +58,7 @@
             user_id = #{userId},
             total_amount = #{totalAmount},
             status = #{status},
+            shipping_address = #{shippingAddress},
             created_at = #{createdAt},
             updated_at = #{updatedAt}
         WHERE id = #{id}

@@ -20,6 +20,7 @@ public class Order {
     private Long userId;
     private BigDecimal totalAmount;
     private OrderStatus status;
+    private String shippingAddress;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

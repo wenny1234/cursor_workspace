@@ -13,6 +13,11 @@
       <div>{{ order.totalAmount | currency:'JPY':'symbol':'1.0-0' }}</div>
     </div>
 
+    <div class="card" *ngIf="order.shippingAddress">
+      <strong>送り場所</strong>
+      <div>{{ order.shippingAddress }}</div>
+    </div>
+
     <div class="card">
       <strong>商品明細</strong>
       <div class="order-item" *ngFor="let item of order.items">

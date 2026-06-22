@@ -4,6 +4,7 @@ import com.shop.backend.mapper.OrderItemMapper;
 import com.shop.backend.mapper.OrderMapper;
 import com.shop.backend.model.Order;
 import com.shop.backend.model.OrderItem;
+import com.shop.backend.model.OrderStatus;
 import com.shop.backend.repository.OrderRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
@@ -32,6 +33,11 @@ public class OrderOracleRepository implements OrderRepository {
     @Override
     public List<Order> findByUserId(Long userId) {
         return orderMapper.findByUserId(userId);
+    }
+
+    @Override
+    public List<Order> findByStatus(OrderStatus status) {
+        return orderMapper.findByStatus(status);
     }
 
     @Override
