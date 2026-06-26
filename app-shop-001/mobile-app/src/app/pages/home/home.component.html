@@ -1,44 +1,102 @@
-<section class="page">
-  <h1>商品一覧</h1>
-  <p class="subtitle">商品を選んでカートに追加できる雛形です。</p>
-
-  <div *ngIf="isLoading" class="card" role="status">
-    読み込み中...
-  </div>
-
-  <div *ngIf="errorMessage" class="card" role="alert">
-    {{ errorMessage }}
-  </div>
-
-  <div *ngIf="!isLoading && !errorMessage" class="product-list">
-    <a
-      class="product-card"
-      *ngFor="let p of products"
-      [routerLink]="['/products', p.id]"
+<section class="market-home">
+  <nav class="category-grid" aria-label="カテゴリー">
+    <button
+      type="button"
+      class="category-item"
+      *ngFor="let cat of categories"
     >
-      <img
-        class="product-img"
-        [src]="imageUrl(p.imageUrl)"
-        [alt]="p.name"
-        loading="lazy"
-      />
+      <span class="category-item__icon" aria-hidden="true">{{ cat.icon }}</span>
+      <span class="category-item__label">{{ cat.label }}</span>
+    </button>
+  </nav>
 
-      <div class="product-info">
-        <div class="product-name">{{ p.name }}</div>
-        <div class="product-price">
-          {{ p.price | currency:'JPY':'symbol':'1.0-0' }}
-        </div>
-        <div class="product-meta">
-          <span class="badge" [class.badge--out]="!p.inStock">
-            {{ p.inStock ? '在庫あり' : '在庫なし' }}
-          </span>
-          <span class="badge badge--muted">{{ p.category }}</span>
-        </div>
-      </div>
-    </a>
-
-    <div *ngIf="products.length === 0" class="card" role="status">
-      商品がありません。
-    </div>
+  <div class="featured-scroll" aria-label="注目タグ">
+    <button
+      type="button"
+      class="featured-card"
+      *ngFor="let tag of featuredTags"
+      [class.featured-card--active]="selectedTag === tag.id"
+      (click)="selectTag(tag.id)"
+    >
+      <span class="featured-card__label">{{ tag.label }}</span>
+      <span class="featured-card__badge" [ngClass]="tag.badgeClass">{{ tag.badge }}</span>
+    </button>
   </div>
+
+  <div *ngIf="isLoading" class="status-card" role="status">読み込み中...</div>
+  <div *ngIf="errorMessage" class="status-card status-card--error" role="alert">{{ errorMessage }}</div>
+
+  <section class="section" *ngIf="!isLoading && !errorMessage && onlineProducts.length > 0">
+    <h2 class="section-title">オンライン決済の投稿</h2>
+    <div class="online-scroll">
+      <a
+        class="online-card"
+        *ngFor="let p of onlineProducts"
+        [routerLink]="['/products', p.id]"
+      >
+        <div class="online-card__image-wrap">
+          <img
+            class="online-card__image"
+            [src]="imageUrl(p.imageUrl)"
+            [alt]="p.name"
+            loading="lazy"
+          />
+          <span class="online-card__price">{{ formatPrice(p.price) }}</span>
+        </div>
+        <div class="online-card__title">{{ p.name }}</div>
+        <div class="online-card__location">{{ locationLabel(p) }}</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section feed-section" *ngIf="!isLoading && !errorMessage">
+    <div class="feed-list">
+      <a
+        class="feed-item"
+        *ngFor="let p of feedProducts"
+        [routerLink]="['/products', p.id]"
+      >
+        <div class="feed-item__thumb">
+          <img
+            [src]="imageUrl(p.imageUrl)"
+            [alt]="p.name"
+            loading="lazy"
+          />
+          <span class="feed-item__category">{{ categoryLabel(p) }}</span>
+        </div>
+
+        <div class="feed-item__body">
+          <div class="feed-item__title">
+            {{ p.name }}。{{ formatPrice(p.price) }}
+          </div>
+          <div class="feed-item__location">{{ locationLabel(p) }}</div>
+          <div class="feed-item__footer">
+            <span class="feed-item__date">{{ postedDate(p) }}</span>
+            <button
+              type="button"
+              class="feed-item__star"
+              [class.feed-item__star--active]="isFavorite(p.id)"
+              (click)="toggleFavorite(p.id, $event)"
+              [attr.aria-label]="isFavorite(p.id) ? 'お気に入り解除' : 'お気に入り'"
+            >
+              ★
+            </button>
+          </div>
+        </div>
+      </a>
+
+      <div *ngIf="feedProducts.length === 0" class="status-card" role="status">
+        該当する投稿がありません。
+      </div>
+    </div>
+  </section>
+
+  <aside class="promo-banner" aria-label="広告">
+    <div class="promo-banner__thumb">👗</div>
+    <div class="promo-banner__content">
+      <div class="promo-banner__brand">Rakuten Fashion</div>
+      <div class="promo-banner__text">人気ブランドが最大50%OFF</div>
+    </div>
+    <button type="button" class="promo-banner__action" aria-label="ダウンロード">↓</button>
+  </aside>
 </section>

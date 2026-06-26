@@ -503,7 +503,7 @@
   </main>
 
   <nav class="app-bottom-nav" aria-label="下部ナビゲーション">
-    <a routerLink="/" routerLinkActive="active" class="nav-item">商品一覧</a>
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">ホーム</a>
     <a routerLink="/cart" routerLinkActive="active" class="nav-item">カート</a>
     <a routerLink="/orders" routerLinkActive="active" class="nav-item">注文</a>
     <a routerLink="/profile" routerLinkActive="active" class="nav-item">プロフィール</a>
