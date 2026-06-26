@@ -7,6 +7,13 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface UserProfile {
+  id?: number;
+  username: string;
+  email?: string;
+  role?: string;
+}
+
 export interface LoginResponse {
   token: string;
   refreshToken: string;
@@ -14,17 +21,17 @@ export interface LoginResponse {
   id: number;
   username: string;
   email: string;
-  // backend の User.Role など、型が未確定なので暫定的に any にします
-  role?: any;
-  user?: any;
+  role?: string;
+  user?: UserProfile;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  // backend: application.yml の context-path が /api なので、URL は /api/auth/login です
-  private readonly loginUrl = 'http://localhost:8080/api/auth/login';
+  private readonly apiBase = 'http://localhost:8080/api';
+  private readonly loginUrl = `${this.apiBase}/auth/login`;
+  private readonly profileUrl = `${this.apiBase}/auth/profile`;
 
   constructor(private http: HttpClient) {}
 
@@ -38,6 +45,46 @@ export class AuthService {
     if (response.role) {
       localStorage.setItem('userRole', String(response.role));
     }
+    this.saveUserProfile({
+      id: response.id,
+      username: response.username,
+      email: response.email,
+      role: response.role ? String(response.role) : undefined,
+    });
+  }
+
+  saveUserProfile(profile: UserProfile): void {
+    localStorage.setItem('userProfile', JSON.stringify(profile));
+  }
+
+  getUserProfile(): UserProfile | null {
+    const raw = localStorage.getItem('userProfile');
+    if (!raw) {
+      return null;
+    }
+    try {
+      return JSON.parse(raw) as UserProfile;
+    } catch {
+      return null;
+    }
+  }
+
+  fetchProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(this.profileUrl).pipe(
+      tap((profile) => {
+        const role = profile.role ? String(profile.role) : this.getRole() ?? undefined;
+        const saved: UserProfile = {
+          id: profile.id,
+          username: profile.username,
+          email: profile.email,
+          role,
+        };
+        this.saveUserProfile(saved);
+        if (role) {
+          localStorage.setItem('userRole', role);
+        }
+      })
+    );
   }
 
   getAccessToken(): string | null {
@@ -46,6 +93,19 @@ export class AuthService {
 
   getRole(): string | null {
     return localStorage.getItem('userRole');
+  }
+
+  roleLabel(role?: string | null): string {
+    switch (role) {
+      case 'ADMIN':
+        return '管理者';
+      case 'STAFF':
+        return 'スタッフ';
+      case 'VIEWER':
+        return '会員';
+      default:
+        return role ?? '—';
+    }
   }
 
   canManageOrders(): boolean {
@@ -57,6 +117,11 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userProfile');
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getAccessToken();
   }
 }
 

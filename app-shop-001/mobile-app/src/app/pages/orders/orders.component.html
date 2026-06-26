@@ -1,26 +1,54 @@
-<section class="page">
-  <h1>注文</h1>
-  <p class="subtitle">あなたの注文履歴です</p>
+<section class="page shop-page">
+  <header class="page-header">
+    <h1>注文</h1>
+    <p class="subtitle">あなたの注文履歴です</p>
+  </header>
 
-  <div *ngIf="isLoading" class="card" role="status">読み込み中...</div>
+  <div *ngIf="isLoading" class="message-card" role="status">読み込み中...</div>
 
-  <div *ngIf="errorMessage" class="card" role="alert">{{ errorMessage }}</div>
+  <div *ngIf="errorMessage" class="message-card message-card--error" role="alert">
+    {{ errorMessage }}
+  </div>
 
-  <div *ngIf="!isLoading && !errorMessage && orders.length === 0" class="card" role="status">
+  <div
+    *ngIf="!isLoading && !errorMessage && orders.length === 0"
+    class="message-card"
+    role="status"
+  >
     注文がありません。カートから購入してください。
   </div>
 
   <div *ngIf="!isLoading && orders.length > 0" class="order-list">
     <a
-      class="card order-card"
+      class="info-panel order-card"
       *ngFor="let order of orders"
       [routerLink]="['/orders', order.id]"
     >
-      <strong>{{ order.orderNumber }}</strong>
-      <div>合計：{{ order.totalAmount | currency:'JPY':'symbol':'1.0-0' }}</div>
-      <div>ステータス：{{ statusLabel(order.status) }}</div>
-      <div *ngIf="order.items?.length" class="order-items">
-        <div *ngFor="let item of order.items">
+      <div class="order-card__header">
+        <strong class="order-card__number">{{ order.orderNumber }}</strong>
+        <span class="status-badge" [ngClass]="'status-badge--' + statusClass(order.status)">
+          {{ statusLabel(order.status) }}
+        </span>
+      </div>
+
+      <dl class="info-list info-list--compact">
+        <div class="info-row">
+          <dt>合計</dt>
+          <dd>{{ order.totalAmount | currency:'JPY':'symbol':'1.0-0' }}</dd>
+        </div>
+        <div class="info-row">
+          <dt>獲得ポイント</dt>
+          <dd>{{ orderPoints(order) }} pt</dd>
+        </div>
+        <div class="info-row" *ngIf="order.createdAt">
+          <dt>注文日</dt>
+          <dd>{{ order.createdAt | date:'yyyy/MM/dd' }}</dd>
+        </div>
+      </dl>
+
+      <div *ngIf="order.items?.length" class="order-card__items">
+        <div class="order-card__items-label">商品</div>
+        <div class="order-card__item" *ngFor="let item of order.items">
           {{ item.productName }} × {{ item.quantity }}
         </div>
       </div>

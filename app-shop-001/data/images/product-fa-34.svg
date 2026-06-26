@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <rect width="400" height="400" fill="#f3e5f5"/>
+  <rect x="20" y="20" width="360" height="360" rx="16" fill="#fff" stroke="#ce93d8" stroke-width="3"/>
+  <rect x="28" y="28" width="80" height="28" rx="14" fill="#7b1fa2"/>
+  <text x="68" y="48" text-anchor="middle" fill="#fff" font-size="14" font-weight="700"
+        font-family="Segoe UI, Hiragino Sans, Meiryo, sans-serif">生活雑貨-キッチン小物</text>
+  <text x="200" y="185" text-anchor="middle" font-size="72">🥤</text>
+  <text x="200" y="285" text-anchor="middle" fill="#333" font-size="18" font-family="Segoe UI, Hiragino Sans, Meiryo, sans-serif">ミキサー 1.5L 1000</text><text x="200" y="311" text-anchor="middle" fill="#333" font-size="18" font-family="Segoe UI, Hiragino Sans, Meiryo, sans-serif">W</text>
+  <text x="200" y="360" text-anchor="middle" fill="#888" font-size="13"
+        font-family="Segoe UI, Hiragino Sans, Meiryo, sans-serif">中古 #34</text>
+</svg>

@@ -22,7 +22,9 @@
   z-index: 10;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 12px 0 16px;
   border-bottom: 1px solid #eee;
 }
 
@@ -30,6 +32,205 @@
   font-weight: 800;
   font-size: 17px;
   color: #3d8b45;
+  flex-shrink: 0;
+}
+
+.app-header__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 52%;
+  border: 0;
+  background: transparent;
+  padding: 4px 6px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.app-header__user:hover {
+  background: #f3f4f6;
+}
+
+.app-header__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #3d8b45;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-header__username {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 56px 16px 16px;
+}
+
+.user-panel {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.user-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.user-panel__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #3d8b45;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.user-panel__name {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.user-panel__role {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.user-panel__points {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.user-panel__points-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #3d8b45;
+  letter-spacing: 0.04em;
+}
+
+.user-panel__points-value {
+  margin-top: 4px;
+  font-size: 32px;
+  font-weight: 800;
+  color: #166534;
+  line-height: 1.2;
+}
+
+.user-panel__points-value--loading {
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.user-panel__points-unit {
+  font-size: 16px;
+  font-weight: 700;
+  color: #3d8b45;
+}
+
+.user-panel__points-note {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.user-panel__points-rule {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.user-panel__info {
+  margin: 0 0 18px;
+  padding: 0;
+}
+
+.user-panel__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.user-panel__row dt {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.user-panel__row dd {
+  margin: 0;
+  font-size: 13px;
+  color: #111827;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-all;
+}
+
+.user-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-panel__btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+
+.user-panel__btn--secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.user-panel__btn--primary {
+  background: #3d8b45;
+  color: #fff;
 }
 
 .app-main {

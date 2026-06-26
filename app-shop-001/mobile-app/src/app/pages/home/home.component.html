@@ -1,25 +1,30 @@
 <section class="market-home">
-  <nav class="category-grid" aria-label="カテゴリー">
+  <nav class="main-category-row" aria-label="カテゴリ検索">
     <button
       type="button"
-      class="category-item"
-      *ngFor="let cat of categories"
+      class="main-category"
+      *ngFor="let cat of mainCategories"
+      [class.main-category--active]="selectedMain === cat.id"
+      (click)="selectMain(cat.id)"
     >
-      <span class="category-item__icon" aria-hidden="true">{{ cat.icon }}</span>
-      <span class="category-item__label">{{ cat.label }}</span>
+      <span class="main-category__icon" aria-hidden="true">{{ cat.icon }}</span>
+      <span class="main-category__label">{{ cat.label }}</span>
     </button>
   </nav>
 
-  <div class="featured-scroll" aria-label="注目タグ">
+  <div
+    class="sub-filter-scroll"
+    *ngIf="activeSubFilters.length > 0"
+    aria-label="サブカテゴリ絞り込み"
+  >
     <button
       type="button"
-      class="featured-card"
-      *ngFor="let tag of featuredTags"
-      [class.featured-card--active]="selectedTag === tag.id"
-      (click)="selectTag(tag.id)"
+      class="sub-filter"
+      *ngFor="let sub of activeSubFilters"
+      [class.sub-filter--active]="selectedSub === sub.id"
+      (click)="selectSub(sub.id)"
     >
-      <span class="featured-card__label">{{ tag.label }}</span>
-      <span class="featured-card__badge" [ngClass]="tag.badgeClass">{{ tag.badge }}</span>
+      {{ sub.label }}
     </button>
   </div>
 
@@ -27,7 +32,7 @@
   <div *ngIf="errorMessage" class="status-card status-card--error" role="alert">{{ errorMessage }}</div>
 
   <section class="section" *ngIf="!isLoading && !errorMessage && onlineProducts.length > 0">
-    <h2 class="section-title">オンライン決済の投稿</h2>
+    <h2 class="section-title">おすすめ</h2>
     <div class="online-scroll">
       <a
         class="online-card"
@@ -44,12 +49,18 @@
           <span class="online-card__price">{{ formatPrice(p.price) }}</span>
         </div>
         <div class="online-card__title">{{ p.name }}</div>
+        <div class="online-card__meta">{{ mainCategoryLabel(p) }} · {{ categoryLabel(p) }}</div>
         <div class="online-card__location">{{ locationLabel(p) }}</div>
       </a>
     </div>
   </section>
 
   <section class="section feed-section" *ngIf="!isLoading && !errorMessage">
+    <h2 class="section-title" *ngIf="selectedMain !== 'all'">
+      {{ filterMainLabel() }}<span *ngIf="selectedSub !== 'all'"> · {{ filterSubLabel() }}</span>
+    </h2>
+    <h2 class="section-title" *ngIf="selectedMain === 'all'">最新出品</h2>
+
     <div class="feed-list">
       <a
         class="feed-item"
@@ -66,6 +77,9 @@
         </div>
 
         <div class="feed-item__body">
+          <div class="feed-item__tags">
+            <span class="feed-item__main-tag">{{ mainCategoryLabel(p) }}</span>
+          </div>
           <div class="feed-item__title">
             {{ p.name }}。{{ formatPrice(p.price) }}
           </div>
@@ -86,17 +100,8 @@
       </a>
 
       <div *ngIf="feedProducts.length === 0" class="status-card" role="status">
-        該当する投稿がありません。
+        該当する出品がありません。
       </div>
     </div>
   </section>
-
-  <aside class="promo-banner" aria-label="広告">
-    <div class="promo-banner__thumb">👗</div>
-    <div class="promo-banner__content">
-      <div class="promo-banner__brand">Rakuten Fashion</div>
-      <div class="promo-banner__text">人気ブランドが最大50%OFF</div>
-    </div>
-    <button type="button" class="promo-banner__action" aria-label="ダウンロード">↓</button>
-  </aside>
 </section>

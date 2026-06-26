@@ -51,5 +51,10 @@ export class CartService {
   clear(): void {
     this.write([]);
   }
+
+  remove(productId: number): void {
+    const items = this.read().filter((x) => x.productId !== productId);
+    this.write(items);
+  }
 }
 

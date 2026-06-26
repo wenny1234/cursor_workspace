@@ -49,7 +49,7 @@
             SELECT orders_seq.NEXTVAL FROM DUAL
         </selectKey>
         INSERT INTO orders (id, order_number, user_id, total_amount, status, shipping_address, created_at, updated_at)
-        VALUES (#{id}, #{orderNumber}, #{userId}, #{totalAmount}, #{status}, #{shippingAddress}, #{createdAt}, #{updatedAt})
+        VALUES (#{id}, #{orderNumber}, #{userId}, #{totalAmount}, #{status}, #{shippingAddress,jdbcType=VARCHAR}, #{createdAt}, #{updatedAt})
     </insert>
 
     <update id="update" parameterType="com.shop.backend.model.Order">
@@ -58,7 +58,7 @@
             user_id = #{userId},
             total_amount = #{totalAmount},
             status = #{status},
-            shipping_address = #{shippingAddress},
+            shipping_address = #{shippingAddress,jdbcType=VARCHAR},
             created_at = #{createdAt},
             updated_at = #{updatedAt}
         WHERE id = #{id}

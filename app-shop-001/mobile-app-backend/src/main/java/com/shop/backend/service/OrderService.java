@@ -129,6 +129,36 @@ public class OrderService {
         return orderRepository.save(order, items);
     }
 
+    @Transactional
+    public Order cancelOrder(Long userId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("订单不存在"));
+
+        if (!order.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("无权取消该订单");
+        }
+
+        if (order.getStatus() != OrderStatus.PAID) {
+            throw new IllegalArgumentException("支払済の注文のみキャンセルできます");
+        }
+
+        List<OrderItem> items = orderRepository.findItemsByOrderId(orderId);
+        LocalDateTime now = LocalDateTime.now();
+
+        for (OrderItem item : items) {
+            Product product = productRepository.findById(item.getProductId())
+                    .orElseThrow(() -> new IllegalArgumentException("商品不存在: " + item.getProductId()));
+            int restored = (product.getStock() == null ? 0 : product.getStock()) + item.getQuantity();
+            product.setStock(restored);
+            product.setUpdatedAt(now);
+            productRepository.save(product);
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+        order.setUpdatedAt(now);
+        return orderRepository.save(order, items);
+    }
+
     private void attachItems(Order order) {
         order.setItems(orderRepository.findItemsByOrderId(order.getId()));
     }

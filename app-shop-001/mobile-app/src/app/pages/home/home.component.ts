@@ -21,16 +21,15 @@ export interface ProductsResponse {
   timestamp: string;
 }
 
-interface CategoryItem {
+interface MainCategory {
+  id: string;
   label: string;
   icon: string;
 }
 
-interface FeaturedTag {
+interface SubFilter {
   id: string;
   label: string;
-  badge: string;
-  badgeClass: string;
 }
 
 @Component({
@@ -42,31 +41,40 @@ export class HomeComponent implements OnInit {
   products: Product[] = [];
   isLoading = false;
   errorMessage: string | null = null;
-  selectedTag = 'popular';
+  selectedMain = 'all';
+  selectedSub = 'all';
   favorites = new Set<number>();
 
-  readonly categories: CategoryItem[] = [
-    { label: '売買', icon: '🛒' },
-    { label: 'メンバー', icon: '👥' },
-    { label: '中古車', icon: '🚗' },
-    { label: '助け合い', icon: '🏠' },
-    { label: 'イベント', icon: '🎈' },
-    { label: 'バイト', icon: '👷' },
-    { label: '正社員', icon: '👔' },
-    { label: '教室', icon: '🎓' },
-    { label: '不動産', icon: '🏢' },
-    { label: 'お店', icon: '🏪' },
-    { label: '里親', icon: '🐾' },
+  readonly mainCategories: MainCategory[] = [
+    { id: '家電', label: '家電', icon: '🔌' },
+    { id: '小家具', label: '小家具', icon: '🪑' },
+    { id: '生活雑貨', label: '生活雑貨', icon: '📦' },
   ];
 
-  readonly featuredTags: FeaturedTag[] = [
-    { id: 'popular', label: '人気', badge: 'UP', badgeClass: 'badge-up' },
-    { id: 'new', label: '新着', badge: 'NEW', badgeClass: 'badge-new' },
-    { id: 'free', label: '0円でもらう', badge: '¥0', badgeClass: 'badge-free' },
-    { id: 'daily', label: '日払いバイト', badge: '💴', badgeClass: 'badge-job' },
-    { id: 'rent', label: '敷金礼金0物件', badge: '🏠', badgeClass: 'badge-rent' },
-    { id: 'kids', label: '子供用品', badge: '👶', badgeClass: 'badge-kids' },
-  ];
+  readonly subFilters: Record<string, SubFilter[]> = {
+    家電: [
+      { id: 'all', label: 'すべて' },
+      { id: '冷蔵庫', label: '冷蔵庫' },
+      { id: '洗濯機', label: '洗濯機' },
+      { id: '炊飯器', label: '炊飯器' },
+      { id: 'エアコン', label: 'エアコン' },
+      { id: '電子レンジ', label: '電子レンジ' },
+      { id: '掃除機', label: '掃除機' },
+    ],
+    小家具: [
+      { id: 'all', label: 'すべて' },
+      { id: '椅子', label: '椅子' },
+      { id: 'テーブル', label: 'テーブル' },
+      { id: 'ベッド', label: 'ベッド' },
+    ],
+    生活雑貨: [
+      { id: 'all', label: 'すべて' },
+      { id: '収納', label: '収納' },
+      { id: 'キッチン小物', label: 'キッチン小物' },
+      { id: '清掃', label: '清掃' },
+      { id: 'その他', label: 'その他' },
+    ],
+  };
 
   private readonly locations = [
     '東京都江東区',
@@ -91,33 +99,46 @@ export class HomeComponent implements OnInit {
     return resolveApiUrl(path);
   }
 
-  selectTag(tagId: string): void {
-    this.selectedTag = tagId;
+  get activeSubFilters(): SubFilter[] {
+    if (this.selectedMain === 'all') {
+      return [];
+    }
+    return this.subFilters[this.selectedMain] ?? [];
+  }
+
+  get filteredProducts(): Product[] {
+    return this.products.filter((p) => this.matchesFilter(p));
   }
 
   get onlineProducts(): Product[] {
-    return this.products.filter((p) => p.inStock !== false).slice(0, 10);
+    return this.filteredProducts.filter((p) => p.inStock !== false).slice(0, 10);
   }
 
   get feedProducts(): Product[] {
-    let list = [...this.products];
+    return this.filteredProducts;
+  }
 
-    switch (this.selectedTag) {
-      case 'new':
-        list.sort((a, b) => b.id - a.id);
-        break;
-      case 'free':
-        list = list.filter((p) => p.price === 0);
-        break;
-      case 'kids':
-        list = list.filter((p) => (p.category ?? '').includes('子供') || (p.category ?? '').includes('ベビー'));
-        break;
-      default:
-        list.sort((a, b) => (b.stock ?? 0) - (a.stock ?? 0));
-        break;
+  selectMain(mainId: string): void {
+    this.selectedMain = this.selectedMain === mainId ? 'all' : mainId;
+    this.selectedSub = 'all';
+  }
+
+  selectSub(subId: string): void {
+    this.selectedSub = subId;
+  }
+
+  matchesFilter(product: Product): boolean {
+    const category = product.category ?? '';
+    if (this.selectedMain === 'all') {
+      return true;
     }
-
-    return list;
+    if (!category.startsWith(this.selectedMain)) {
+      return false;
+    }
+    if (this.selectedSub === 'all') {
+      return true;
+    }
+    return category === `${this.selectedMain}-${this.selectedSub}`;
   }
 
   formatPrice(price: number): string {
@@ -127,8 +148,30 @@ export class HomeComponent implements OnInit {
     return `${price.toLocaleString('ja-JP')}円`;
   }
 
+  filterMainLabel(): string {
+    return this.mainCategories.find((c) => c.id === this.selectedMain)?.label ?? this.selectedMain;
+  }
+
+  filterSubLabel(): string {
+    const subs = this.subFilters[this.selectedMain] ?? [];
+    return subs.find((s) => s.id === this.selectedSub)?.label ?? this.selectedSub;
+  }
+
   categoryLabel(product: Product): string {
-    return product.category || '売買';
+    const category = product.category ?? '';
+    if (!category) {
+      return '中古';
+    }
+    const parts = category.split('-');
+    if (parts.length === 2) {
+      return parts[1];
+    }
+    return category;
+  }
+
+  mainCategoryLabel(product: Product): string {
+    const category = product.category ?? '';
+    return category.split('-')[0] || '中古';
   }
 
   locationLabel(product: Product): string {

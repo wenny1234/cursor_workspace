@@ -85,6 +85,22 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<?> cancelOrder(
+            @PathVariable Long id,
+            Authentication authentication) {
+        try {
+            UserDetailsImpl user = getCurrentUser(authentication);
+            Order order = orderService.cancelOrder(user.getId(), id);
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "注文をキャンセルしました");
+            response.put("order", order);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     private UserDetailsImpl getCurrentUser(Authentication authentication) {
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetailsImpl)) {
             throw new IllegalArgumentException("未认证");
