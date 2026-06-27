@@ -25,7 +25,7 @@ def main():
     products = json.loads(JSON_FILE.read_text(encoding="utf-8"))
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     lines = [
-        "-- 商品画像 URL 更新（家具・小家电 SVG）",
+        "-- 商品画像 URL 更新（家具・家電 PNG 実写）",
         f"-- Generated: {ts}",
         "",
     ]
