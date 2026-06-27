@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.wms.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.shop.wms.model.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="UserColumns">
+        id, username, password, email, role, created_at, updated_at
+    </sql>
+
+    <select id="findById" resultMap="UserResultMap">
+        SELECT <include refid="UserColumns"/>
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByUsername" resultMap="UserResultMap">
+        SELECT <include refid="UserColumns"/>
+        FROM users
+        WHERE username = #{username}
+    </select>
+
+    <select id="search" resultMap="UserResultMap">
+        SELECT <include refid="UserColumns"/>
+        FROM users
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    LOWER(username) LIKE '%' || LOWER(#{keyword}) || '%'
+                    OR LOWER(email) LIKE '%' || LOWER(#{keyword}) || '%'
+                )
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.shop.wms.model.User">
+        <selectKey keyProperty="id" order="BEFORE" resultType="long">
+            SELECT users_seq.NEXTVAL FROM DUAL
+        </selectKey>
+        INSERT INTO users (id, username, password, email, role, created_at, updated_at)
+        VALUES (#{id}, #{username}, #{password}, #{email}, #{role}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update" parameterType="com.shop.wms.model.User">
+        UPDATE users
+        SET username = #{username},
+            password = #{password},
+            email = #{email},
+            role = #{role},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <update id="deactivate">
+        UPDATE users
+        SET updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="existsByUsername" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM users
+        WHERE username = #{username}
+        <if test="excludeId != null">
+            AND id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="existsByEmail" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END
+        FROM users
+        WHERE email = #{email}
+        <if test="excludeId != null">
+            AND id != #{excludeId}
+        </if>
+    </select>
+
+    <select id="countActive" resultType="long">
+        SELECT COUNT(*) FROM users
+    </select>
+</mapper>

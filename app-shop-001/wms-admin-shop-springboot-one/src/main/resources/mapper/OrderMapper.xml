@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shop.wms.mapper.OrderMapper">
+
+    <resultMap id="OrderResultMap" type="com.shop.wms.model.Order">
+        <id property="id" column="id"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="userId" column="user_id"/>
+        <result property="username" column="username"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="shippingAddress" column="shipping_address"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="OrderColumns">
+        o.id, o.order_number, o.user_id, o.total_amount, o.status, o.shipping_address, o.created_at, o.updated_at
+    </sql>
+
+    <sql id="OrderColumnsWithUser">
+        o.id, o.order_number, o.user_id, u.username, o.total_amount, o.status, o.shipping_address, o.created_at, o.updated_at
+    </sql>
+
+    <select id="findById" resultMap="OrderResultMap">
+        SELECT <include refid="OrderColumnsWithUser"/>
+        FROM orders o
+        LEFT JOIN users u ON u.id = o.user_id
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="findByStatus" resultMap="OrderResultMap">
+        SELECT <include refid="OrderColumns"/>
+        FROM orders o
+        WHERE o.status = #{status}
+        ORDER BY o.created_at ASC, o.id ASC
+    </select>
+
+    <select id="findRecent" resultMap="OrderResultMap">
+        SELECT * FROM (
+            SELECT <include refid="OrderColumnsWithUser"/>
+            FROM orders o
+            LEFT JOIN users u ON u.id = o.user_id
+            ORDER BY o.created_at DESC NULLS LAST, o.id DESC
+        )
+        WHERE ROWNUM &lt;= #{limit}
+    </select>
+
+    <update id="update" parameterType="com.shop.wms.model.Order">
+        UPDATE orders
+        SET order_number = #{orderNumber},
+            user_id = #{userId},
+            total_amount = #{totalAmount},
+            status = #{status},
+            shipping_address = #{shippingAddress,jdbcType=VARCHAR},
+            created_at = #{createdAt},
+            updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM orders
+    </select>
+
+    <select id="countByStatus" resultType="long">
+        SELECT COUNT(*) FROM orders WHERE status = #{status}
+    </select>
+
+    <select id="sumTotalAmount" resultType="java.math.BigDecimal">
+        SELECT NVL(SUM(total_amount), 0) FROM orders WHERE status != 'CANCELLED'
+    </select>
+</mapper>

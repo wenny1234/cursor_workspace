@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン - WMS 出荷管理</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/wms.css}">
+</head>
+<body class="login-page">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card login-card shadow">
+                <div class="card-body p-4">
+                    <h1 class="h3 text-center mb-1">WMS 出荷管理</h1>
+                    <p class="text-muted text-center mb-4">倉庫出荷処理システム（Spring Boot 4）</p>
+
+                    <form th:action="@{/login}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">ユーザー名</label>
+                            <input id="username" name="username" type="text" class="form-control"
+                                   value="staff" required autofocus autocomplete="username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">パスワード</label>
+                            <input id="password" name="password" type="password" class="form-control"
+                                   value="staff123" required autocomplete="current-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">ログイン</button>
+                    </form>
+
+                    <p th:if="${param.error}" class="alert alert-danger mt-3 mb-0">
+                        ユーザー名またはパスワードが正しくありません（ADMIN / STAFF のみ）
+                    </p>
+                    <p th:if="${param.logout}" class="alert alert-success mt-3 mb-0">ログアウトしました</p>
+
+                    <p class="text-muted text-center small mt-3 mb-0">サンプル: staff / staff123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
